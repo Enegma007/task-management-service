@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: task-management-service
+  h2:
+    console:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: WARN
+    com.taskmanagement: INFO

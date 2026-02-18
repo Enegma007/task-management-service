@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: task-management-service-qa
+  datasource:
+    url: jdbc:h2:mem:taskdb_qa
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+
+server:
+  port: 8081
+
+logging:
+  level:
+    root: INFO
+    com.taskmanagement: DEBUG
