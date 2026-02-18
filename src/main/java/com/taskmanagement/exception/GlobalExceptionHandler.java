@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,6 +20,7 @@ public class GlobalExceptionHandler {
 
     private static final String USER_MESSAGE_NOT_FOUND = "We couldn't find a task with the given ID. Please check the ID and try again.";
     private static final String USER_MESSAGE_VALIDATION = "Some fields in your request are invalid. Please correct them and try again.";
+    private static final String USER_MESSAGE_BAD_JSON = "Request body is invalid or contains an invalid value (e.g. date-time). Use ISO-8601 for dates, e.g. 2026-02-18T14:08 or 2026-02-18T14:08:00Z.";
     private static final String USER_MESSAGE_INTERNAL = "Something went wrong on our side. Please try again in a few moments.";
 
     @ExceptionHandler(TaskNotFoundException.class)
@@ -42,6 +44,19 @@ public class GlobalExceptionHandler {
                 ApiError.CODE_BAD_REQUEST,
                 "Bad Request",
                 ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        log.warn("Invalid request body: path={}, message={}", request.getRequestURI(), ex.getMessage());
+        ApiError error = ApiError.of(
+                HttpStatus.BAD_REQUEST.value(),
+                ApiError.CODE_BAD_REQUEST,
+                "Bad Request",
+                USER_MESSAGE_BAD_JSON,
                 request.getRequestURI()
         );
         return ResponseEntity.badRequest().body(error);

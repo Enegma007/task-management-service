@@ -1,5 +1,7 @@
 package com.taskmanagement.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.taskmanagement.config.FlexibleInstantDeserializer;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ public class TaskUpdateRequest {
 
     private Boolean isCompleted;
 
+    @JsonDeserialize(using = FlexibleInstantDeserializer.class)
     private Instant dueDate;
 
     @Size(max = 100, message = "Assigned-to identifier must not exceed 100 characters")
